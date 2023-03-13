@@ -1,6 +1,7 @@
 from flask import *
 import psycopg2
 from urllib.parse import urlparse
+from flask_cors import CORS, cross_origin
 from json import load
 
 #Database connectivity
@@ -81,13 +82,15 @@ def updateUser(password, id):
     return fetchUserData()
 
 
-
 app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 if __name__ == '__main__':
     app.run(debug=False, port=5000)
 
 @app.route('/api/dashboard', methods=["GET", "POST", "PUT", "DELETE"])
+@cross_origin()
 def getAllPosts():
     if (request.method=="POST"):
         try:
@@ -118,6 +121,7 @@ def getAllPosts():
             return jsonify({"error":"Cannot delete the given element, check params, check logs"})
 
 @app.route('/api/dashboard/users', methods=["GET", "POST", "PUT"])
+@cross_origin()
 def getAllUsers():
     try:
         if (request.method=="POST"):
